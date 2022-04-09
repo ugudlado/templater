@@ -1,9 +1,9 @@
 # Change Log
 
-All notable changes to the "templater" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
 ## [Unreleased]
 
 - Initial release
+  - Supports creating files from templates
+  - Supports predefined variables of DATE and FILE_NAME within templates
+  - Support user defined variables within templates
+  - User setting to set templates directory

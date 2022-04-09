@@ -1,7 +1,11 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+import { existsSync } from "fs";
 import { TextDecoder, TextEncoder } from "util";
 import * as vscode from "vscode";
+
+let PREDEFINED_VARIABLES = new Map();
+PREDEFINED_VARIABLES.set("DATE", new Date().toDateString());
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -14,23 +18,27 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
-    "templater.helloWorld",
+    "templater.createFileFromTemplate",
     () => {
-      // The code you place here will be executed every time your command is executed
-      // Display a message box to the user
-      vscode.window.showInformationMessage("Hello World from Templater!");
       if (vscode.workspace.workspaceFolders !== undefined) {
+        let templatesUri: vscode.Uri;
         var uri = vscode.workspace.workspaceFolders[0].uri;
-        var templatesUri = vscode.Uri.joinPath(uri, "templates");
+        var config = vscode.workspace.getConfiguration("templater");
+        var path: string | undefined = config.get("source");
+        if (path && existsSync(path)) {
+          templatesUri = vscode.Uri.parse(path);
+        } else {
+          templatesUri = vscode.Uri.joinPath(uri, "templates");
+        }
         var templates: string[] = [];
         vscode.workspace.fs.readDirectory(templatesUri).then((f) => {
-          f.map((t) => t[0].split(".")[0]).forEach((t) => templates.push(t));
+          f.map((t) => t[0]).forEach((t) => templates.push(t));
           vscode.window.showQuickPick(templates).then((x) => {
+            var extension = x?.split(".")[1];
             vscode.window.showInputBox().then((val) => {
-              var newUri = vscode.Uri.file(`${uri.path}/${val}.txt`);
-              var templateUri = vscode.Uri.file(
-                `${templatesUri.path}/${x}.txt`
-              );
+              PREDEFINED_VARIABLES.set("FILE_NAME", val);
+              var newUri = vscode.Uri.file(`${uri.path}/${val}.${extension}`);
+              var templateUri = vscode.Uri.file(`${templatesUri.path}/${x}`);
               vscode.workspace.fs.readFile(templateUri).then((contentArray) => {
                 var content = new TextDecoder().decode(contentArray);
                 var regexp = /\$\$[a-zA-Z]+\$\$/g;
@@ -47,17 +55,35 @@ export function activate(context: vscode.ExtensionContext) {
                         })
                         .then((v) => {
                           if (v !== undefined) {
-                            content = content.replace(`${variable}`, v);
+                            content = content.replace(variable, v);
                           }
                         });
                   });
+
+                  var predefined_regexp = /@@[a-zA-Z_]+@@/g;
+                  var needed_predefined_variables =
+                    content.match(predefined_regexp);
+                  needed_predefined_variables?.forEach((variable) => {
+                    var variableName = variable.replace(/@@/g, "");
+                    content = content.replace(
+                      variable,
+                      PREDEFINED_VARIABLES.get(variableName)
+                    );
+                  });
+
                   var final = Promise.resolve();
                   promises.forEach((p) => {
                     final = final.then(() => p());
                   });
                   Promise.all([final]).then(() => {
                     var contentArray = new TextEncoder().encode(content);
-                    vscode.workspace.fs.writeFile(newUri, contentArray);
+                    vscode.workspace.fs
+                      .writeFile(newUri, contentArray)
+                      .then(() =>
+                        vscode.workspace
+                          .openTextDocument(newUri)
+                          .then((doc) => vscode.window.showTextDocument(doc))
+                      );
                   });
                 }
               });
