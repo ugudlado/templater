@@ -2,6 +2,10 @@
   "name": "templater",
   "displayName": "Templater",
   "description": "Simplifies use of templates",
+  "publisher": "curiousbots",
+  "repository": {
+    "url": "https://github.com/ugudlado/templater"
+  },
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.66.0"
