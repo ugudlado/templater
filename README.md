@@ -1,6 +1,6 @@
-# templater README
+# templr README
 
-Templater is VS code extension to simplify creating files using templates in VS code. We can use templates for various purposes from interviews to front end development.
+Templr is VS code extension to simplify creating files using templates in VS code. We can use templates for various purposes from interviews to front end development.
 
 ## Features
 
@@ -30,4 +30,4 @@ Currently, extension supports following features:
 
 ## Suggest enhancements or Report bugs
 
-Report any issues or enhacements here: <https://github.com/ugudlado/templater/issues>
+Report any issues or enhacements here: <https://github.com/ugudlado/templr/issues>

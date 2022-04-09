@@ -10,20 +10,13 @@ PREDEFINED_VARIABLES.set("DATE", new Date().toDateString());
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "templater" is now active!');
-
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
-    "templater.createFileFromTemplate",
+    "templr.createFileFromTemplate",
     () => {
       if (vscode.workspace.workspaceFolders !== undefined) {
         let templatesUri: vscode.Uri;
         var uri = vscode.workspace.workspaceFolders[0].uri;
-        var config = vscode.workspace.getConfiguration("templater");
+        var config = vscode.workspace.getConfiguration("templr");
         var path: string | undefined = config.get("source");
         if (path && existsSync(path)) {
           templatesUri = vscode.Uri.parse(path);

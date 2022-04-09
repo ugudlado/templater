@@ -1,10 +1,10 @@
 {
-  "name": "templater",
-  "displayName": "Templater",
+  "name": "templr",
+  "displayName": "templr",
   "description": "Simplifies use of templates",
   "publisher": "curiousbots",
   "repository": {
-    "url": "https://github.com/ugudlado/templater"
+    "url": "https://github.com/ugudlado/templr"
   },
   "version": "0.0.1",
   "engines": {
@@ -14,21 +14,21 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:templater.createFileFromTemplate"
+    "onCommand:templr.createFileFromTemplate"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "templater.createFileFromTemplate",
+        "command": "templr.createFileFromTemplate",
         "title": "Create new file from template"
       }
     ],
     "configuration": [
       {
-        "title": "Templater",
+        "title": "Templr",
         "properties": {
-          "templater.source": {
+          "templr.source": {
             "type": "string",
             "default": "${workspaceFolder}/templates",
             "description": "Specifies the folder path containing templates.",
